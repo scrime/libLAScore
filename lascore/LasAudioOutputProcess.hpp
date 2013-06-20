@@ -1,5 +1,5 @@
 /***************************************************************************
- *            LasAudioOutputProcess.hpp
+ *            LasSoundfileProcess.hpp
  *
  *  2012 Florent Berthaut
  *  ANR INEDIT Project
@@ -8,18 +8,18 @@
  ****************************************************************************/
 
 
-#ifndef LasAudioOutputProcess_h
-#define LasAudioOutputProcess_h
+#ifndef LasSoundfileProcess_h
+#define LasSoundfileProcess_h
 
 #include "LasProcess.hpp"
 
-class LasAudioOutputProcess: public LasProcess {
+class LasSoundfileProcess: public LasProcess {
 	public:
-		LasAudioOutputProcess();
-		virtual ~LasAudioOutputProcess();
+		LasSoundfileProcess();
+		virtual ~LasSoundfileProcess();
 
-        inline void addChannel(){}
-
+        void addChannel();
+        void load(const std::string& fileStr);
 	protected:
 
 };

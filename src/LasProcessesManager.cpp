@@ -85,6 +85,9 @@ LasProcessesManager::LasProcessesManager(): m_inpChanNb(2),
     }
 	StartAudioPlayer(m_player);
 
+    //create the audio input and output processes
+    m_audioInputProc=new LasInputBuffer
+
 }
 
 LasProcessesManager::~LasProcessesManager() {
@@ -129,6 +132,7 @@ LasSoundfileProcess* LasProcessesManager::createSoundfileProcess() {
     m_processesMap[newProc->getID()]=newProc;
     return newProc;
 }
+
 
 void LasProcessesManager::update() {
 
