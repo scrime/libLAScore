@@ -5,14 +5,14 @@ libLAScore is a library that allows one to create interactive scores of audio gr
 
 Developed by Florent Berthaut (http://hitmuri.net) for the INEDIT project(http://inedit.ircam.fr/) with Myriam Desainte-Catherine and David Janin (LaBRI, University of Bordeaux) in collaboration with the Grame (http://www.grame.fr/)
 
-Requires:
-*python
-*libAudioStream: http://sourceforge.net/projects/libaudiostream/
-*libIscore: https://github.com/raphaelmarczak/libIscore
+Requires:   
+-python   
+-libAudioStream: http://sourceforge.net/projects/libaudiostream/   
+-libIscore: https://github.com/raphaelmarczak/libIscore   
 
-Compile with the following commands:
-./waf configure 
-./waf
+Compile with the following commands:   
+./waf configure   
+./waf   
 
 See the files in the examples directory for use examples.
 
