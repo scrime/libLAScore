@@ -1,12 +1,12 @@
 /***************************************************************************
- *  LasProcessesManager.hpp
+ *  LasScoreManager.hpp
  *  2012- Florent Berthaut
  *  ANR INEDIT Project
  *  This file is part of libLAScore
  ****************************************************************************/
 
-#ifndef LasProcessesManager_h
-#define LasProcessesManager_h
+#ifndef LasScoreManager_h
+#define LasScoreManager_h
 
 #include <vector>
 #include <map>
@@ -20,10 +20,10 @@ class LasAudioOutputProcess;
 class LasFaustProcess;
 class LasSoundfileProcess;
 
-class LasProcessesManager {
+class LasScoreManager {
 	public:
-		static LasProcessesManager* getInstance();
-		~LasProcessesManager();
+		static LasScoreManager* getInstance();
+		~LasScoreManager();
 
 		void update();
         void start();
@@ -32,20 +32,30 @@ class LasProcessesManager {
 
         LasFaustProcess* createFaustProcess();
         LasSoundfileProcess* createSoundfileProcess();
-        inline LasAudioInputProcess* getAudioInputProcess() { 
-            return m_audioInputProc;
-        }
-        inline LasAudioOutputProcess* getAudioOutputProcess() {
-            return m_audioOutputProc;
-        }
+        LasAudioInputProcess* getAudioInputProcess();
+        LasAudioOutputProcess* getAudioOutputProcess();
 
         inline Engines* getIscoreEngines(){return m_engines;}
         inline AudioPlayerPtr getLASPlayer(){return m_player;}
 
         inline bool isPlaying(){return m_playing;}
 
+        uint64_t msToFrames(const uint64_t&);
+
+    protected:
+        friend void isExecutionFinishedCallBack();
+        friend void waitedTriggerPointCallBack(bool isWaited, 
+                                                unsigned int triggerId, 
+                                                unsigned int boxId, 
+                                                unsigned int controlPointIndex, 
+                                                std::string triggerMessage);
+        friend void controlPointCallBack(  
+                                    unsigned int boxId, 
+                                    unsigned int controlPointIndex, 
+                                    std::vector<unsigned int> processToStop);
+
 	private:
-		LasProcessesManager();
+		LasScoreManager();
 
     private:
         std::vector<LasProcess*> m_processes;

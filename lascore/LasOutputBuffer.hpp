@@ -24,7 +24,16 @@ class LasOutputBuffer {
 		virtual ~LasOutputBuffer();
         void connectBuffer(LasInputBuffer*);
 
+        AudioStreamPtr getStream();
+        
+        void prepareStreamChannel(const unsigned int& streamChanID, 
+                                            LasInputBuffer* inpBuf, 
+                                            bool& triggered);
+        void setChannel(LasChannel* chan);
+
 	protected:
+        uint64_t m_positionInFrames;
+        uint64_t m_lengthInFrames;
         LasChannel* m_channel;
         std::vector<LasInputBuffer*> m_connectedBuffers;
 };

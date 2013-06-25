@@ -5,8 +5,11 @@
  *  This file is part of libLASProc
  ****************************************************************************/
 
-#include <lascore/LasInputBuffer.hpp>
-#include <lascore/LasOutputBuffer.hpp>
+#include "LasInputBuffer.hpp"
+
+#include "LasChannel.hpp"
+#include "LasProcess.hpp"
+#include "LasOutputBuffer.hpp"
 
 using namespace std;
 
@@ -14,11 +17,22 @@ LasInputBuffer::LasInputBuffer(LasOutputBuffer* out):m_connectedBuffer(out) {}
 
 LasInputBuffer::~LasInputBuffer() {}
 
-/*
 AudioStreamPtr LasInputBuffer::getStream() {
-    //sequence of 
-    ////silence with size = (connectedBuffer absolute pos minus absolute pos)
-    ////cut of process.channel content from (connectedBuffer absolute pos to abspos+size)
-}
+/*
+    AudioStreamPtr sil = MakeNullSoundPtr(m_positionInFrames);
+    AudioStreamPtr conBufStream = m_connectedBuffer->getStream(0);
+    return MakeSeqSoundPtr(sil, confBufStream, 0);
 */
+    return m_connectedBuffer->getStream();
+}
+
+void LasInputBuffer::prepareStreamChannel(const unsigned int& streamChanID, 
+                                            LasInputBuffer* inpBuf, 
+                                            bool& triggered) {
+    m_connectedBuffer->prepareStreamChannel(streamChanID, inpBuf, triggered);
+}
+
+uint64_t LasInputBuffer::getAbsPosInFrames() {
+    return m_positionInFrames+m_channel->getProcess()->getPositionInFrames();
+}
 

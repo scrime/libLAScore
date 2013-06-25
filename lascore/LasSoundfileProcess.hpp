@@ -1,10 +1,8 @@
 /***************************************************************************
- *            LasSoundfileProcess.hpp
- *
+ *  LasSoundfileProcess.hpp
  *  2012 Florent Berthaut
  *  ANR INEDIT Project
- *
- *  This file is part of libTuiles
+ *  This file is part of libLAScore
  ****************************************************************************/
 
 
@@ -13,6 +11,8 @@
 
 #include "LasProcess.hpp"
 
+#include <string>
+
 class LasSoundfileProcess: public LasProcess {
 	public:
 		LasSoundfileProcess();
@@ -20,8 +20,12 @@ class LasSoundfileProcess: public LasProcess {
 
         void addChannel();
         void load(const std::string& fileStr);
-	protected:
 
+        AudioStreamPtr getStream(LasChannel*);
+
+	protected:
+        std::string m_fileName;
+        std::vector<char> m_fileNameChars;
 };
 
 #endif

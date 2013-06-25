@@ -2,7 +2,7 @@
  *  LasFaustProcess.hpp
  *  2012- Florent Berthaut
  *  ANR INEDIT Project
- *  This file is part of libTuiles
+ *  This file is part of libLAScore
  ****************************************************************************/
 
 
@@ -18,12 +18,14 @@ class LasFaustProcess: public LasProcess {
 		LasFaustProcess();
 		virtual ~LasFaustProcess();
 
-        void addChannel();
+        virtual void addChannel();
         void load(const std::string& effectStr);
+
+        AudioStreamPtr getStream(LasChannel*);
 
 	protected:
         std::string m_effectStr;
-
+        std::vector<AudioEffectListPtr> m_effectLists;
 };
 
 #endif

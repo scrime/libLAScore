@@ -2,41 +2,51 @@
  *  LasFaustProcess.cpp
  *  2012- Florent Berthaut
  *  ANR INEDIT Project
- *  This file is part of libLASProc
+ *  This file is part of libLAScore
  ****************************************************************************/
 
-#include <lascore/LasFaustProcess.hpp>
+#include "LasFaustProcess.hpp"
+
+#include <iostream>
+#include <stdexcept>
+
+#include "LasChannel.hpp"
 
 using namespace std;
 
-LasFaustProcess::LasFaustProcess():LasProcess() {}
+LasFaustProcess::LasFaustProcess(): LasProcess() {
+    addChannel();
+}
 
 LasFaustProcess::~LasFaustProcess() {}
 
-/*
-AudioStreamPtr LasFaustProcess::getStream() {
-    //combine the input channel with ID with the corresponding faust process
-    return MakeTransformSoundPtr(m_channel[]->getStream(), m_effectList, 0, 0);
+AudioStreamPtr LasFaustProcess::getStream(LasChannel* chan) {
+    return MakeTransformSoundPtr(chan->getInputStream(), 
+                                    m_effectLists[chan->getID()], 0, 0);
 }
-*/
 
 void LasFaustProcess::addChannel() {
-/*
-    m_channels.push_back(new LasChannel());
+    LasProcess::addChannel();
     m_effectLists.push_back(MakeAudioEffectListPtr());
-    setFaustEffect(m_effectStr);
-*/
+    if(m_effectStr.compare("")!=0) {
+        load(m_effectStr);
+    }
 }
 
 void LasFaustProcess::load(const std::string& effectStr) {
     m_effectStr=effectStr;
-/*
-    for(unsigned int c=0; c<m_channels.size(); ++c) {
-        ClearAudioEffectListPtr(m_effectLists[c]);
-        AddAudioEffectPtr(m_effectLists[c], 
-                            MakeFaustAudioEffectPtr(effectStr.c_str()));
+    try{
+        for(unsigned int c=0; c<m_effectLists.size(); ++c) {
+            ClearAudioEffectListPtr(m_effectLists[c]);
+            AudioEffectPtr fx = 
+                MakeFaustAudioEffectPtr(m_effectStr.c_str(), "", "");
+            AddAudioEffectPtr(m_effectLists[c], fx);
+        }
     }
-*/
+    catch(exception e) {
+        cout<<"Error when loading the faust effect "<<effectStr
+            <<" : "<<e.what()<<endl;
+    }
 }
 
 

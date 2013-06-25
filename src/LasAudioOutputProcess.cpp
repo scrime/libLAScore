@@ -1,42 +1,53 @@
 /***************************************************************************
- *  LasSoundfileProcess.cpp
+ *  LasAudioOutputProcess.cpp
  *  2012- Florent Berthaut
  *  ANR INEDIT Project
  *  This file is part of libLASProc
  ****************************************************************************/
 
-#include <lascore/LasSoundfileProcess.hpp>
+#include "LasAudioOutputProcess.hpp"
+
+#include <iostream>
+
+#include "LasChannel.hpp"
+#include "LasInputBuffer.hpp"
 
 using namespace std;
 
-LasSoundfileProcess::LasSoundfileProcess(): LasProcess() {}
-
-LasSoundfileProcess::~LasSoundfileProcess() {}
-
-/*
-AudioStreamPtr LasSoundfileProcess::getStream() {
-    //combine the input channel with ID with the corresponding faust process
-    return MakeTransformSoundPtr(m_channel[]->getStream(), m_effectList, 0, 0);
-}
-*/
-
-void LasSoundfileProcess::addChannel() {
-/*
-    m_channels.push_back(new LasChannel());
-    m_effectLists.push_back(MakeAudioEffectListPtr());
-    setSoundfileEffect(m_effectStr);
-*/
+LasAudioOutputProcess::LasAudioOutputProcess(): LasProcess() { 
+    addChannel();
 }
 
-void LasSoundfileProcess::load(const std::string& fileStr) {
-/*
-    m_effectStr=effectStr;
-    for(unsigned int c=0; c<m_channels.size(); ++c) {
-        ClearAudioEffectListPtr(m_effectLists[c]);
-        AddAudioEffectPtr(m_effectLists[c], 
-                            MakeSoundfileAudioEffectPtr(effectStr.c_str()));
+LasAudioOutputProcess::~LasAudioOutputProcess() {}
+
+void LasAudioOutputProcess::addChannel() {
+    LasProcess::addChannel();
+    //m_channels.push_back(new LasChannel());
+}
+
+void LasAudioOutputProcess::load(const std::string& fileStr) {
+
+}
+
+
+void LasAudioOutputProcess::prepareStreamChannels() {
+    unsigned int streamChanID=1;
+    vector<LasChannel*>::iterator itChan = m_channels.begin();
+    for(; itChan!=m_channels.end(); ++itChan) {
+        vector<LasInputBuffer*>::const_iterator itBuf 
+                                    = (*itChan)->getInputBuffers().begin();
+        for(; itBuf!=(*itChan)->getInputBuffers().end(); ++itBuf) {
+            bool triggered=false;
+            (*itBuf)->prepareStreamChannel(streamChanID, (*itBuf), triggered);
+            if(!triggered) {
+                cout<<"buffer in outputproc"<<endl;
+                m_streamChannelMap[0].push_back(*itBuf);
+            }
+            else {
+                cout<<"buffer in triggered proc"<<endl;
+                streamChanID++;
+            }
+        }
     }
-*/
 }
-
 

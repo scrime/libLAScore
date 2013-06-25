@@ -2,41 +2,31 @@
  *  LasSoundfileProcess.cpp
  *  2012- Florent Berthaut
  *  ANR INEDIT Project
- *  This file is part of libLASProc
+ *  This file is part of libLAScore
  ****************************************************************************/
 
-#include <lascore/LasSoundfileProcess.hpp>
+#include "LasSoundfileProcess.hpp"
 
 using namespace std;
 
-LasSoundfileProcess::LasSoundfileProcess(): LasProcess() {}
+LasSoundfileProcess::LasSoundfileProcess(): LasProcess() {
+    addChannel();
+}
 
 LasSoundfileProcess::~LasSoundfileProcess() {}
 
-/*
-AudioStreamPtr LasSoundfileProcess::getStream() {
-    //combine the input channel with ID with the corresponding faust process
-    return MakeTransformSoundPtr(m_channel[]->getStream(), m_effectList, 0, 0);
+AudioStreamPtr LasSoundfileProcess::getStream(LasChannel*) {
+    return MakeReadSoundPtr(&m_fileNameChars[0]);
 }
-*/
 
 void LasSoundfileProcess::addChannel() {
-/*
-    m_channels.push_back(new LasChannel());
-    m_effectLists.push_back(MakeAudioEffectListPtr());
-    setSoundfileEffect(m_effectStr);
-*/
+    LasProcess::addChannel();
 }
 
 void LasSoundfileProcess::load(const std::string& fileStr) {
-/*
-    m_effectStr=effectStr;
-    for(unsigned int c=0; c<m_channels.size(); ++c) {
-        ClearAudioEffectListPtr(m_effectLists[c]);
-        AddAudioEffectPtr(m_effectLists[c], 
-                            MakeSoundfileAudioEffectPtr(effectStr.c_str()));
-    }
-*/
+    m_fileName=fileStr;
+    m_fileNameChars.resize(m_fileName.size() + 1);
+    copy(m_fileName.begin(), m_fileName.end(), m_fileNameChars.begin());
 }
 
 
