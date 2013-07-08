@@ -13,6 +13,8 @@
 
 #include <string>
 
+namespace lascore {
+
 class LasSoundfileProcess: public LasProcess {
 	public:
 		LasSoundfileProcess();
@@ -27,6 +29,8 @@ class LasSoundfileProcess: public LasProcess {
         std::string m_fileName;
         std::vector<char> m_fileNameChars;
 };
+
+}
 
 #endif
 

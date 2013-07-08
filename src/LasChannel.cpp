@@ -13,6 +13,8 @@
 
 using namespace std;
 
+namespace lascore {
+
 LasChannel::LasChannel() {}
 
 LasChannel::~LasChannel() {}
@@ -58,3 +60,6 @@ void LasChannel::prepareStreamChannel(const unsigned int& streamChanID,
 const uint64_t& LasChannel::getLengthInFrames() { 
     return m_process->getLengthInFrames();
 }
+
+}
+

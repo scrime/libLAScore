@@ -9,6 +9,8 @@
 
 using namespace std;
 
+namespace lascore {
+
 LasSoundfileProcess::LasSoundfileProcess(): LasProcess() {
     addChannel();
 }
@@ -29,4 +31,5 @@ void LasSoundfileProcess::load(const std::string& fileStr) {
     copy(m_fileName.begin(), m_fileName.end(), m_fileNameChars.begin());
 }
 
+}
 

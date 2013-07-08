@@ -14,6 +14,8 @@
 #include <LibAudioStream/LibAudioStream.h>
 #include <IScore/Engines.hpp>
 
+namespace lascore {
+
 class LasProcess;
 class LasAudioInputProcess;
 class LasAudioOutputProcess;
@@ -59,7 +61,7 @@ class LasScoreManager {
 
     private:
         std::vector<LasProcess*> m_processes;
-        std::map<unsigned int, LasProcess*> m_processesMap;
+        std::map<int, LasProcess*> m_processesMap;
 
         LasAudioInputProcess* m_audioInputProc;
         LasAudioOutputProcess* m_audioOutputProc;
@@ -75,6 +77,8 @@ class LasScoreManager {
         unsigned int m_fileBufSize;
         bool m_playing;
 };
+
+}
 
 #endif
 

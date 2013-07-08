@@ -10,6 +10,8 @@
 
 #include "LasProcess.hpp"
 
+namespace lascore {
+
 class LasAudioInputProcess: public LasProcess {
 	public:
 		LasAudioInputProcess();
@@ -23,6 +25,8 @@ class LasAudioInputProcess: public LasProcess {
 	protected:
 
 };
+
+}
 
 #endif
 

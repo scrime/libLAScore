@@ -17,6 +17,8 @@
 
 using namespace std;
 
+namespace lascore {
+
 void controlPointCallBack(  unsigned int boxId, 
                             unsigned int controlPointIndex, 
                             std::vector<unsigned int> processToStop) {
@@ -109,7 +111,7 @@ void LasScoreManager::start() {
     //prepare the streams
     m_audioOutputProc->prepareStreamChannels();
 
-    //TODO start the audio player
+    //start the audio player
 	StartAudioPlayer(m_player);
 
     //start the iscore engine
@@ -152,12 +154,13 @@ LasSoundfileProcess* LasScoreManager::createSoundfileProcess() {
 }
 
 void LasScoreManager::update() {
-
-    //update all the processes
+    //TODO update all the processes
 
 }
 
 uint64_t LasScoreManager::msToFrames(const uint64_t& ms) {
     return double(ms)/1000.0*(double)m_sampleRate;
+}
+
 }
 

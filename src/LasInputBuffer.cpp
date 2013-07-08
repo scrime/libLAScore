@@ -13,7 +13,10 @@
 
 using namespace std;
 
-LasInputBuffer::LasInputBuffer(LasOutputBuffer* out):m_connectedBuffer(out) {}
+namespace lascore {
+
+LasInputBuffer::LasInputBuffer(LasOutputBuffer* out):m_connectedBuffer(out),
+                                                    m_positionInFrames(0) {}
 
 LasInputBuffer::~LasInputBuffer() {}
 
@@ -34,5 +37,7 @@ void LasInputBuffer::prepareStreamChannel(const unsigned int& streamChanID,
 
 uint64_t LasInputBuffer::getAbsPosInFrames() {
     return m_positionInFrames+m_channel->getProcess()->getPositionInFrames();
+}
+
 }
 

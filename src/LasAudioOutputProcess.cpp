@@ -14,6 +14,8 @@
 
 using namespace std;
 
+namespace lascore {
+
 LasAudioOutputProcess::LasAudioOutputProcess(): LasProcess() { 
     addChannel();
 }
@@ -49,5 +51,7 @@ void LasAudioOutputProcess::prepareStreamChannels() {
             }
         }
     }
+}
+
 }
 

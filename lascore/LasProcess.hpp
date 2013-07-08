@@ -12,6 +12,8 @@
 #include <map>
 #include <LibAudioStream/LibAudioStream.h>
 
+namespace lascore {
+
 class LasChannel;
 class LasInputBuffer;
 
@@ -25,7 +27,7 @@ class LasProcess {
         void start();
         void stop();
 
-        inline const unsigned int& getID() {return m_id;}
+        inline const int& getID() {return m_id;}
 
         void setPositionInMs(const uint64_t& pos);
         void setLengthInMs(const uint64_t& length);
@@ -47,7 +49,7 @@ class LasProcess {
         void updateBox();
 
 	protected:
-        unsigned int m_id;
+        int m_id;
         uint64_t m_positionInMs;
         uint64_t m_lengthInMs;
         uint64_t m_positionInFrames;
@@ -58,6 +60,8 @@ class LasProcess {
         std::map<unsigned int, 
                 std::vector<LasInputBuffer*> > m_streamChannelMap;
 };
+
+}
 
 #endif
 

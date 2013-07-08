@@ -14,6 +14,8 @@
 #include <stdint.h>
 #include <LibAudioStream/LibAudioStream.h>
 
+namespace lascore {
+
 class LasChannel;
 class LasOutputBuffer;
 
@@ -38,6 +40,8 @@ class LasInputBuffer {
         uint64_t m_positionInFrames;
         uint64_t m_lengthInFrames;
 };
+
+}
 
 #endif
 

@@ -7,9 +7,13 @@
 
 #include "LasOutputBuffer.hpp"
 
+#include <iostream>
+
 #include "LasChannel.hpp"
 
 using namespace std;
+
+namespace lascore {
 
 LasOutputBuffer::LasOutputBuffer():m_positionInFrames(0), 
                                     m_lengthInFrames(1000) {}
@@ -37,3 +41,6 @@ void LasOutputBuffer::setChannel(LasChannel* chan){
     m_positionInFrames=0;
     m_lengthInFrames=m_channel->getLengthInFrames();
 }
+
+}
+

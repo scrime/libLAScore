@@ -14,6 +14,8 @@
 
 using namespace std;
 
+namespace lascore {
+
 LasFaustProcess::LasFaustProcess(): LasProcess() {
     addChannel();
 }
@@ -49,4 +51,5 @@ void LasFaustProcess::load(const std::string& effectStr) {
     }
 }
 
+}
 

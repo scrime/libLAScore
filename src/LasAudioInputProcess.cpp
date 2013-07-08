@@ -9,6 +9,8 @@
 
 using namespace std;
 
+namespace lascore {
+
 LasAudioInputProcess::LasAudioInputProcess(): LasProcess() {
     addChannel();
 }
@@ -26,4 +28,5 @@ void LasAudioInputProcess::addChannel() {
 void LasAudioInputProcess::load(const std::string& fileStr) {
 }
 
+}
 

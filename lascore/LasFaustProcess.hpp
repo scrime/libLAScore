@@ -13,6 +13,8 @@
 
 #include "LasProcess.hpp"
 
+namespace lascore {
+
 class LasFaustProcess: public LasProcess {
 	public:
 		LasFaustProcess();
@@ -27,6 +29,8 @@ class LasFaustProcess: public LasProcess {
         std::string m_effectStr;
         std::vector<AudioEffectListPtr> m_effectLists;
 };
+
+}
 
 #endif
 

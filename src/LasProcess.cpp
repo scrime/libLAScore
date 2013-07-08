@@ -16,17 +16,20 @@
 
 using namespace std;
 
+namespace lascore {
+
 LasProcess::LasProcess():   m_positionInMs(0),
                             m_lengthInMs(1000),
                             m_triggered(false) {
-
     LasScoreManager* man = LasScoreManager::getInstance();
     m_positionInFrames = man->msToFrames(m_positionInMs);
     m_lengthInFrames = man->msToFrames(m_lengthInMs);
-
     m_id = man->getIscoreEngines()->addBox(m_positionInMs, 
                                                 m_lengthInMs, 
                                                     ROOT_BOX_ID);
+    updateBox();
+
+    DEBUG("Created process "<<m_id);
 }
 
 LasProcess::~LasProcess() {}
@@ -86,13 +89,13 @@ void LasProcess::updateBox() {
                                                     vec, 
                                                     NO_MAX_MODIFICATION);
         if(!done) {
-            cout<<"Process "<<m_id
-                <<" could not be moved to "
-                <<m_positionInMs<<" - "<<m_positionInMs+m_lengthInMs<<endl;
+            DEBUG("Process "<<m_id
+                    <<" could not be moved to "
+                    <<m_positionInMs<<" - "<<m_positionInMs+m_lengthInMs);
         }
     }
     catch(exception e) {
-        cout<<"Error when moving process "<<m_id<<" : "<<e.what()<<endl;
+        DEBUG("Error when moving process "<<m_id<<" : "<<e.what());
     }
 }
 
@@ -110,6 +113,7 @@ void LasProcess::start() {
         AudioStreamPtr mixStream = MakeNullSoundPtr(0);
         vector<LasInputBuffer*>::iterator itBuf = itChan->second.begin();
         for(; itBuf!=itChan->second.end(); ++itBuf) {
+            cout<<"in proc, start "<<endl;
             AudioStreamPtr sil = MakeNullSoundPtr((*itBuf)->getAbsPosInFrames()
                                                     - info.fCurFrame);
             mixStream = MakeMixSoundPtr(mixStream, 
@@ -123,13 +127,15 @@ void LasProcess::start() {
     //start playing the LAS streams
     for(itChan=m_streamChannelMap.begin(); 
                 itChan!=m_streamChannelMap.end(); ++itChan) {
-        cout<<"Starting LAS channel "<<itChan->first
-            <<" at frame "<<info.fCurFrame<<endl;
+        DEBUG("Starting LAS channel "<<itChan->first
+                <<" at frame "<<info.fCurFrame);
         StartChannel(player, itChan->first);
     }
 }
 
 void LasProcess::stop() {
+    //TODO ?
+}
 
 }
 

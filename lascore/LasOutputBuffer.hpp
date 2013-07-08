@@ -15,6 +15,8 @@
 #include <LibAudioStream/LibAudioStream.h>
 #include <vector>
 
+namespace lascore {
+
 class LasChannel;
 class LasInputBuffer;
 
@@ -37,6 +39,8 @@ class LasOutputBuffer {
         LasChannel* m_channel;
         std::vector<LasInputBuffer*> m_connectedBuffers;
 };
+
+}
 
 #endif
 

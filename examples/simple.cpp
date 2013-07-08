@@ -17,6 +17,7 @@
 #include <lascore/LasOutputBuffer.hpp>
 
 using namespace std;
+using namespace lascore;
 
 int main(int argc, char* argv) {
 
@@ -31,37 +32,31 @@ int main(int argc, char* argv) {
     //and an audio output process
     LasAudioOutputProcess* audioOutput = man->getAudioOutputProcess();
 
-    //Add a Faust process and set its position
-    cout<<"Adding an echo.dsp faust effect"<<endl;   
+    cout<<"Add an echo.dsp faust effect"<<endl;   
     LasFaustProcess* faust1 = man->createFaustProcess();
     faust1->load("examples/echo.dsp");
-    faust1->setPositionInMs(10);
+    faust1->setPositionInMs(2000);
     faust1->setLengthInMs(5000);
 
-    //Connect it to the audio input and to the audio output 
-    cout<<"Connecting it to the main input"<<endl;
+    cout<<"Connect it to the main input"<<endl;
     LasOutputBuffer* obuf1 = audioInput->getChannel(0)->addOutputBuffer();
-    LasInputBuffer* ibuf1 = faust1->getChannel(0)->addInputBuffer(obuf1);
+    faust1->getChannel(0)->addInputBuffer(obuf1);
 
-    //Add a soundfile process  
-    cout<<"Adding drums.wav and connecting it to the echo effect"<<endl;
+    cout<<"Add drums.wav"<<endl;
     LasSoundfileProcess* sound1 = man->createSoundfileProcess();
     sound1->load("examples/drums.wav");
     sound1->setPositionInMs(1000);
     sound1->setLengthInMs(3000);
 
-    //Connect it to the faust process
-    cout<<"Connecting the sound file to the faust effect"<<endl;
+    cout<<"Connect the sound file to the faust effect"<<endl;
     LasOutputBuffer* obuf2 = sound1->getChannel(0)->addOutputBuffer();
-    LasInputBuffer* ibuf2 = faust1->getChannel(0)->addInputBuffer(obuf2);
+    faust1->getChannel(0)->addInputBuffer(obuf2);
 
-    //Connect the faust process to the audio output
-    cout<<"Connecting the effect to the main output"<<endl;
+    cout<<"Connect the effect to the main output"<<endl;
     LasOutputBuffer* obuf3 = faust1->getChannel(0)->addOutputBuffer();
-    LasInputBuffer* ibuf3 = audioOutput->getChannel(0)->addInputBuffer(obuf3);
+    audioOutput->getChannel(0)->addInputBuffer(obuf3);
 
-    //Start the audiograph
-    cout<<"Start playing the graph"<<endl;
+    cout<<"Start playing the score"<<endl;
     man->start();
 
     int time=0;
