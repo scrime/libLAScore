@@ -11,6 +11,8 @@
 #include "LasInputBuffer.hpp"
 #include "LasProcess.hpp"
 
+#include "LasScoreManager.hpp"
+
 using namespace std;
 
 namespace lascore {
@@ -37,17 +39,35 @@ AudioStreamPtr LasChannel::getOutputStream() {
 }
 
 LasOutputBuffer* LasChannel::addOutputBuffer() {
-    LasOutputBuffer* outBuf = new LasOutputBuffer();
-    outBuf->setChannel(this);
+    LasOutputBuffer* outBuf = new LasOutputBuffer(this);
     m_outputBuffers.push_back(outBuf);
+    LasScoreManager* man = LasScoreManager::getInstance();
+    std::vector<unsigned int> movedBoxes;
+    man->getIscoreEngines()->addTemporalRelation(
+                                m_process->getID(), BEGIN_CONTROL_POINT_INDEX, 
+                                outBuf->getID(), BEGIN_CONTROL_POINT_INDEX,
+                                ANTPOST_ANTERIORITY, movedBoxes);
+    man->getIscoreEngines()->addTemporalRelation(
+                                outBuf->getID(), END_CONTROL_POINT_INDEX,
+                                m_process->getID(), END_CONTROL_POINT_INDEX, 
+                                ANTPOST_ANTERIORITY, movedBoxes);
     return outBuf;
 }
 
 LasInputBuffer* LasChannel::addInputBuffer(LasOutputBuffer* outBuf) {
-    LasInputBuffer* inpBuf = new LasInputBuffer(outBuf);
-    inpBuf->setChannel(this);
+    LasInputBuffer* inpBuf = new LasInputBuffer(this, outBuf);
     outBuf->connectBuffer(inpBuf);
     m_inputBuffers.push_back(inpBuf);
+    LasScoreManager* man = LasScoreManager::getInstance();
+    vector<unsigned int> vec;
+    man->getIscoreEngines()->addTemporalRelation(
+                                m_process->getID(), BEGIN_CONTROL_POINT_INDEX, 
+                                inpBuf->getID(), BEGIN_CONTROL_POINT_INDEX,
+                                ANTPOST_ANTERIORITY, vec);
+    man->getIscoreEngines()->addTemporalRelation(
+                                outBuf->getID(), END_CONTROL_POINT_INDEX,
+                                m_process->getID(), END_CONTROL_POINT_INDEX, 
+                                ANTPOST_ANTERIORITY, vec);
     return inpBuf;
 }
 
@@ -59,6 +79,21 @@ void LasChannel::prepareStreamChannel(const unsigned int& streamChanID,
 
 const uint64_t& LasChannel::getLengthInFrames() { 
     return m_process->getLengthInFrames();
+}
+
+const uint64_t& LasChannel::getLengthInMs() { 
+    return m_process->getLengthInMs();
+}
+
+void LasChannel::updateBoxes() {
+    vector<LasInputBuffer*>::iterator itIBuf = m_inputBuffers.begin();
+    for(; itIBuf!=m_inputBuffers.end(); ++itIBuf) {
+        (*itIBuf)->updateBox();
+    }
+    vector<LasOutputBuffer*>::iterator itOBuf = m_outputBuffers.begin();
+    for(; itOBuf!=m_outputBuffers.end(); ++itOBuf) {
+        (*itOBuf)->updateBox();
+    }
 }
 
 }

@@ -79,6 +79,9 @@ LasScoreManager::LasScoreManager(): m_audioInputProc(NULL),
     m_engines->addCrossingTrgPointCallback(&waitedTriggerPointCallBack);
     m_engines->addExecutionFinishedCallback(&isExecutionFinishedCallBack);
 
+    //create the root box
+    m_rootID = m_engines->addBox(1, 1000, ROOT_BOX_ID);
+
     //create the LAS audio player 
     m_player = OpenAudioPlayer(m_inpChanNb, m_outChanNb, m_playChanNb, 
                                 m_sampleRate, m_audioBufSize, m_fileBufSize, 
@@ -125,16 +128,20 @@ void LasScoreManager::stop() {
 
 LasAudioInputProcess* LasScoreManager::getAudioInputProcess() { 
     if(m_audioInputProc==NULL) {
+        DEBUG("Creating audio input");
         m_audioInputProc= new LasAudioInputProcess();
         m_processesMap[m_audioInputProc->getID()]=m_audioInputProc;
+        DEBUG("Audio output created");
     }
     return m_audioInputProc;
 }
 
 LasAudioOutputProcess* LasScoreManager::getAudioOutputProcess() { 
     if(m_audioOutputProc==NULL) {
+        DEBUG("Creating audio output");
         m_audioOutputProc= new LasAudioOutputProcess();
         m_processesMap[m_audioOutputProc->getID()]=m_audioOutputProc;
+        DEBUG("Audio output created");
     }
     return m_audioOutputProc;
 }
@@ -156,6 +163,19 @@ LasSoundfileProcess* LasScoreManager::createSoundfileProcess() {
 void LasScoreManager::update() {
     //TODO update all the processes
 
+}
+
+void LasScoreManager::updateAllBoxes() {
+    vector<LasProcess*>::iterator itProc=m_processes.begin();
+    for(; itProc!=m_processes.end(); ++itProc) {
+        (*itProc)->updateBoxes();
+    }
+    if(m_audioOutputProc) {
+        m_audioOutputProc->updateBoxes();
+    }
+    if(m_audioInputProc) {
+        m_audioInputProc->updateBoxes();
+    }
 }
 
 uint64_t LasScoreManager::msToFrames(const uint64_t& ms) {

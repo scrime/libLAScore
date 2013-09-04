@@ -24,13 +24,11 @@ LasAudioOutputProcess::~LasAudioOutputProcess() {}
 
 void LasAudioOutputProcess::addChannel() {
     LasProcess::addChannel();
-    //m_channels.push_back(new LasChannel());
 }
 
 void LasAudioOutputProcess::load(const std::string& fileStr) {
 
 }
-
 
 void LasAudioOutputProcess::prepareStreamChannels() {
     unsigned int streamChanID=1;
@@ -42,11 +40,14 @@ void LasAudioOutputProcess::prepareStreamChannels() {
             bool triggered=false;
             (*itBuf)->prepareStreamChannel(streamChanID, (*itBuf), triggered);
             if(!triggered) {
-                cout<<"buffer in outputproc"<<endl;
+                DEBUG("Preparing stream channels in AudioOutputProcessuffer " 
+                        <<" buffer started in AudioOutputProcess");
                 m_streamChannelMap[0].push_back(*itBuf);
             }
             else {
-                cout<<"buffer in triggered proc"<<endl;
+                DEBUG("Preparing stream channels in AudioOutputProcessuffer " 
+                        <<" buffer started in triggered Process"
+                        <<" for las stream "<<streamChanID);
                 streamChanID++;
             }
         }

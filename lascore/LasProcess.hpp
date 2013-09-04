@@ -44,12 +44,15 @@ class LasProcess {
 
         inline void enableInteractionPoint(){m_triggered=true;}
         inline void disableInteractionPoint(){m_triggered=false;}
+        void updateBoxes();
 
     protected:
+        void testEditBox(const uint64_t& pos, const uint64_t& length);
         void updateBox();
 
 	protected:
         int m_id;
+        int m_relationID;
         uint64_t m_positionInMs;
         uint64_t m_lengthInMs;
         uint64_t m_positionInFrames;

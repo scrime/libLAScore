@@ -18,18 +18,26 @@ using namespace std;
 
 namespace lascore {
 
-LasProcess::LasProcess():   m_positionInMs(0),
+LasProcess::LasProcess():   m_positionInMs(1),
                             m_lengthInMs(1000),
                             m_triggered(false) {
     LasScoreManager* man = LasScoreManager::getInstance();
-    m_positionInFrames = man->msToFrames(m_positionInMs);
-    m_lengthInFrames = man->msToFrames(m_lengthInMs);
     m_id = man->getIscoreEngines()->addBox(m_positionInMs, 
                                                 m_lengthInMs, 
                                                     ROOT_BOX_ID);
-    updateBox();
-
-    DEBUG("Created process "<<m_id);
+    DEBUG("Creating process "<<m_id);
+    vector<unsigned int> vec;
+/*
+    m_relationID = man->getIscoreEngines()->addTemporalRelation(
+                                        m_id, 
+                                        BEGIN_CONTROL_POINT_INDEX, 
+                                        man->getRootID(), 
+                                        BEGIN_CONTROL_POINT_INDEX, 
+                                        ANTPOST_ANTERIORITY, m_positionInMs, 
+                                        NO_BOUND, vec);
+*/
+    DEBUG("Created process "<<m_id<<" with relation "<<m_relationID);
+    testEditBox(m_positionInMs, m_lengthInMs);
 }
 
 LasProcess::~LasProcess() {}
@@ -41,16 +49,15 @@ void LasProcess::addChannel() {
 }
 
 void LasProcess::setPositionInMs(const uint64_t& pos) {
-    m_positionInMs=pos;
-    m_positionInFrames = 
-        LasScoreManager::getInstance()->msToFrames(m_positionInMs);
-    updateBox();
+    if(pos>0) {
+        testEditBox(pos, m_lengthInMs);
+    }
 }
 
 void LasProcess::setLengthInMs(const uint64_t& length) {
-    m_lengthInMs=length;
-    m_lengthInFrames = LasScoreManager::getInstance()->msToFrames(m_lengthInMs);
-    updateBox();
+    if(length>0) {
+        testEditBox(m_positionInMs, length);
+    }
 }
 
 AudioStreamPtr LasProcess::getStream(LasChannel* chan) {
@@ -79,23 +86,43 @@ void LasProcess::prepareStreamChannel(const unsigned int& streamChanID,
     }
 }
 
-void LasProcess::updateBox() {
+void LasProcess::testEditBox(const uint64_t& pos, const uint64_t& length) {
     try {
         LasScoreManager* man = LasScoreManager::getInstance();
         vector<unsigned int> vec;
+        //man->getIscoreEngines()->changeTemporalRelationBounds(
+        //                           m_relationID, pos, NO_BOUND, vec);
         bool done = man->getIscoreEngines()->performBoxEditing(m_id, 
-                                                    m_positionInMs, 
-                                                    m_positionInMs+m_lengthInMs,
+                                                    pos, 
+                                                    pos+length,
                                                     vec, 
                                                     NO_MAX_MODIFICATION);
+        man->updateAllBoxes();
         if(!done) {
             DEBUG("Process "<<m_id
                     <<" could not be moved to "
-                    <<m_positionInMs<<" - "<<m_positionInMs+m_lengthInMs);
+                    <<pos<<" - "<<pos+length);
         }
     }
     catch(exception e) {
         DEBUG("Error when moving process "<<m_id<<" : "<<e.what());
+    }
+}
+
+void LasProcess::updateBox() {
+    LasScoreManager* man = LasScoreManager::getInstance();
+    m_positionInMs=man->getIscoreEngines()->getBoxBeginTime(m_id);
+    m_positionInFrames = man->msToFrames(m_positionInMs);
+    m_lengthInMs=man->getIscoreEngines()->getBoxDuration(m_id);
+    m_lengthInFrames = man->msToFrames(m_lengthInMs);
+    DEBUG("Process "<<m_id<<" at absolute ms position "<<m_positionInMs);
+}
+
+void LasProcess::updateBoxes() {
+    updateBox();
+    vector<LasChannel*>::iterator itChan = m_channels.begin();
+    for(; itChan!=m_channels.end(); ++itChan) {
+        (*itChan)->updateBoxes();
     }
 }
 
@@ -113,13 +140,16 @@ void LasProcess::start() {
         AudioStreamPtr mixStream = MakeNullSoundPtr(0);
         vector<LasInputBuffer*>::iterator itBuf = itChan->second.begin();
         for(; itBuf!=itChan->second.end(); ++itBuf) {
-            cout<<"in proc, start "<<endl;
             AudioStreamPtr sil = MakeNullSoundPtr((*itBuf)->getAbsPosInFrames()
                                                     - info.fCurFrame);
             mixStream = MakeMixSoundPtr(mixStream, 
                                         MakeSeqSoundPtr(sil, 
                                                         (*itBuf)->getStream(),
                                                         0));
+
+            DEBUG("In Process "<<m_id<<" adding buffer at frame "
+                            <<(*itBuf)->getAbsPosInFrames()-info.fCurFrame
+                            <<" to LAS channel "<<itChan->first);
         }
         LoadChannelPtr(player, mixStream, itChan->first, 1.0f, 1.0f, 1.0f);
     }
@@ -127,9 +157,9 @@ void LasProcess::start() {
     //start playing the LAS streams
     for(itChan=m_streamChannelMap.begin(); 
                 itChan!=m_streamChannelMap.end(); ++itChan) {
+        StartChannel(player, itChan->first);
         DEBUG("Starting LAS channel "<<itChan->first
                 <<" at frame "<<info.fCurFrame);
-        StartChannel(player, itChan->first);
     }
 }
 

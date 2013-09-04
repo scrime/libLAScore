@@ -1,10 +1,8 @@
 /***************************************************************************
- *            LasInputBuffer.hpp
- *
- *  2012 Florent Berthaut
+ *  LasInputBuffer.hpp
+ *  2012- Florent Berthaut
  *  ANR INEDIT Project
- *
- *  This file is part of libTuiles
+ *  This file is part of libLAScore
  ****************************************************************************/
 
 
@@ -21,18 +19,23 @@ class LasOutputBuffer;
 
 class LasInputBuffer {
 	public:
-		LasInputBuffer(LasOutputBuffer*);
+		LasInputBuffer(LasChannel*, LasOutputBuffer*);
 		virtual ~LasInputBuffer();
         AudioStreamPtr getStream();
         void prepareStreamChannel(const unsigned int& streamChanID, 
                                             LasInputBuffer* inpBuf, 
                                             bool& triggered);
-        
-        inline void setChannel(LasChannel* chan){m_channel=chan;}
+        void setPositionInMs(const uint64_t&);
         uint64_t getAbsPosInFrames();
-        inline uint64_t getPositionInFrames(){return m_positionInFrames;}
+        uint64_t getPositionInFrames();
+        inline const int& getID(){return m_id;}
+        void updateBox();
+
+    protected:
+        void editBox();
 
 	protected:
+        int m_id;
         LasChannel* m_channel;
         LasOutputBuffer* m_connectedBuffer;
         uint64_t m_positionInMs;

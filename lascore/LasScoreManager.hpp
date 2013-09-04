@@ -40,6 +40,9 @@ class LasScoreManager {
         inline Engines* getIscoreEngines(){return m_engines;}
         inline AudioPlayerPtr getLASPlayer(){return m_player;}
 
+        inline const unsigned int& getRootID(){return m_rootID;}
+        void updateAllBoxes();
+
         inline bool isPlaying(){return m_playing;}
 
         uint64_t msToFrames(const uint64_t&);
@@ -55,6 +58,8 @@ class LasScoreManager {
                                     unsigned int boxId, 
                                     unsigned int controlPointIndex, 
                                     std::vector<unsigned int> processToStop);
+
+        
 
 	private:
 		LasScoreManager();
@@ -76,6 +81,8 @@ class LasScoreManager {
         unsigned int m_rtAudioBufSize;
         unsigned int m_fileBufSize;
         bool m_playing;
+
+        unsigned int m_rootID;
 };
 
 }

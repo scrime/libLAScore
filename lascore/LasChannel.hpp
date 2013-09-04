@@ -35,6 +35,7 @@ class LasChannel {
         inline void setProcess(LasProcess* proc){m_process=proc;}
         inline LasProcess* getProcess(){return m_process;}
         const uint64_t& getLengthInFrames();
+        const uint64_t& getLengthInMs();
 
         LasOutputBuffer* addOutputBuffer();
         LasInputBuffer* addInputBuffer(LasOutputBuffer*);
@@ -42,6 +43,7 @@ class LasChannel {
         inline const std::vector<LasInputBuffer*>& getInputBuffers() {
             return m_inputBuffers;
         }
+        void updateBoxes();
 
 	protected:
         unsigned int m_id;

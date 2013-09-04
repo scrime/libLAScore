@@ -8,12 +8,12 @@ Developed by Florent Berthaut (http://hitmuri.net) for the INEDIT project(http:/
 Requires:   
 -python   
 -libAudioStream: http://sourceforge.net/projects/libaudiostream/   
--libIscore: https://github.com/raphaelmarczak/libIscore   
+-libIscore: https://github.com/scrime/libIscore
 
 Compile with the following commands:   
 ./waf configure   
 ./waf   
 
-See the files in the examples directory for use examples.
+See the files in the examples directory for examples on how to use libLAScore
 
 

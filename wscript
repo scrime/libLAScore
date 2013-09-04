@@ -49,7 +49,7 @@ def build(bld):
     bld.program(
         source       = 'examples/simple.cpp',
         target       = 'simple'+bld.variant,
-        use          = 'LAScore',
+        use          = 'LAScore'+bld.variant,
     )
 
 from waflib.Build import BuildContext, CleanContext
